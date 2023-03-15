@@ -5,12 +5,17 @@ TagManager:
   serializedVersion: 2
   tags:
   - Shootable
-  - Center
   - Spawn_points
   - HralthBar
   - Slider
   - Enemy
   - GameOver
+  - Dpoints
+  - SpwanManager
+  - Centers
+  - ButtonStand
+  - fader
+  - Hand
   layers:
   - Default
   - TransparentFX

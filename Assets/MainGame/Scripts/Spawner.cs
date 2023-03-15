@@ -1,7 +1,11 @@
+using Mono.Cecil;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
+using Random = UnityEngine.Random;
+
 
 public class Spawner : MonoBehaviour
 {
@@ -12,7 +16,7 @@ public class Spawner : MonoBehaviour
     public class wave
     {
         public string name;
-        public Transform enemy;
+        public Transform[] enemy;
         public int count;
         public float rate;
     }
@@ -35,7 +39,14 @@ public class Spawner : MonoBehaviour
     public bool onetimecall;
 
     public GameObject GameOver;
-    
+
+    private initiator _Initiator;
+
+    private void Awake()
+    {
+        _Initiator = GetComponent<initiator>();
+    }
+
     private void Update()
     {
 
@@ -58,13 +69,14 @@ public class Spawner : MonoBehaviour
             {
                 StartCoroutine(SpawnWave(waves[nextwave]));
                 onetimecall = false;
+                _Initiator._source.PlayOneShot(_Initiator._Fight, 0.7f);
             }
         }
         else
         {
-            if(waveCountdown !>= 0)
+            if(waveCountdown >= 0)
             {
-                waveCountdown -= Time.deltaTime;          
+                waveCountdown -= Time.deltaTime;
             }
         }
     }
@@ -77,8 +89,10 @@ public class Spawner : MonoBehaviour
         if (nextwave + 1 > waves.Length - 1)
         {
             Debug.Log("Waves Completed");
-            Time.timeScale = 0;
+            
             GameOver.SetActive(true);
+            _Initiator._source.PlayOneShot(_Initiator._get_ready, 1);
+            StartCoroutine(RestartWait());
         }
         else
         {
@@ -109,7 +123,7 @@ public class Spawner : MonoBehaviour
 
         for (int i = 0; i < _wave.count; i++)
         {
-            SpawnEnemy(_wave.enemy);
+            SpawnEnemy(_wave.enemy[Random.Range(0,_wave.enemy.Length)]);
             yield return new WaitForSeconds(1f / _wave.rate);
         }
 
@@ -126,7 +140,13 @@ public class Spawner : MonoBehaviour
             Debug.LogError("No Spawn Points Added");
         }
 
-        Transform sp = spawnPoints[Random.Range(0, spawnPoints.Length)];
+        Transform sp = spawnPoints[UnityEngine.Random.Range(0, spawnPoints.Length)];
         Instantiate(_enemy, sp.position, sp.rotation);
+    }
+
+    IEnumerator RestartWait()
+    {
+        yield return new WaitForSeconds(10f);
+        GameOver.GetComponent<GameOver>().Restart();
     }
 }

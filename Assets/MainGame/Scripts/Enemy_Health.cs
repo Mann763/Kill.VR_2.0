@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class Enemy_Health : MonoBehaviour
 {
+    //properties of the enemy
     public playerHealth player;
-    public Transform centerPoint;
+    public GameObject[] centerPoint;
+    private int current_Point;
 
     public float maxHealth;
-//    [HideInInspector]
-    public float currentHealth;
+
+    [HideInInspector] public float currentHealth;
     public HealthBar healthBar;
 
     public playerHealth gameOver;
@@ -18,16 +20,19 @@ public class Enemy_Health : MonoBehaviour
 
     public ParticleSystem deathEffect;
 
+    //updating how enemy looks at player
     private void LateUpdate()
     {
         transform.LookAt(player.transform.position);
     }
 
-    // Start is called before the first frame update
+    // initializing the properties
     void Start()
     {
-        centerPoint = GameObject.FindGameObjectWithTag("Center").GetComponent<Transform>();
-        this.transform.parent = centerPoint;
+        centerPoint = GameObject.FindGameObjectsWithTag("Centers");
+        current_Point = Random.Range(0,centerPoint.Length);
+
+        this.transform.parent = centerPoint[current_Point].transform;
 
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<playerHealth>();
         currentHealth = maxHealth;
@@ -35,17 +40,13 @@ public class Enemy_Health : MonoBehaviour
         healthBar.SetMaxHealth(maxHealth);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
+    // taking damage when hit 
     public void TakeDamage(int amount)
     {
         currentHealth -= amount;
         healthBar.SetHealth(currentHealth);
 
+        // dying when health is 0
         if (currentHealth <= 0)
         {
             Die();

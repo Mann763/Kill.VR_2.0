@@ -4,50 +4,60 @@ using UnityEngine;
 
 public class Projectile_Spawner : MonoBehaviour
 {
+    private int _poolSize = 5;
     public GameObject firePoint;
     public GameObject Projectile;
 
-    public float FireRate; 
-    
-    float currentTime;
+    public float FireRate;
 
-    Animator anim;
+    private Animator anim;
+
+    private List<GameObject> _projectilePool;
+    private int _poolIndex = 0;
 
     // Start is called before the first frame update
     void Start()
     {
-        currentTime = FireRate;
-        anim = GetComponentInParent<Animator>();
+        anim = GetComponent<Animator>();
+
+        InitiliazePool();
+
+        StartCoroutine(FireProjectile());
     }
 
-    // Update is called once per frame
-    void Update()
+    private IEnumerator FireProjectile()
     {
-        currentTime = currentTime + Time.deltaTime;
-        if (currentTime >= FireRate)
-        {
-            SpawnProjectile();
-            currentTime = 0f;
-        }        
-    }
-
-    void SpawnProjectile()
-    {
-        if(firePoint != null)
-        {
-            anim.SetTrigger("Fire");
-        }
-        else
-        {
-            Debug.Log("No Fire Point Assigned");
-        }
+        anim.SetTrigger("Fire");
+        yield return new WaitForSeconds(FireRate);
+        StartCoroutine(FireProjectile());
     }
 
     public void spawnanimation()
     {
-        GameObject vfx;
-        vfx = Instantiate(Projectile, firePoint.transform.position, Quaternion.identity);
+        _projectilePool[_poolIndex].transform.position = firePoint.transform.position;
+        _projectilePool[_poolIndex].SetActive(true);
+        _poolIndex = (_poolIndex + 1) % _projectilePool.Count;   
     }
 
+    private void OnDestroy()
+    {
+        // Loop through the object pool and destroy each projectile
+        foreach (GameObject projectile in _projectilePool)
+        {
+            Destroy(projectile);
+        }
+    }
 
+    private void InitiliazePool()
+    {
+        // Initialize the pool
+        _projectilePool = new List<GameObject>();
+        for (int i = 0; i < _poolSize; i++)
+        {
+            GameObject vfx = Instantiate(Projectile, Vector3.zero, Quaternion.identity);
+
+            vfx.SetActive(false);
+            _projectilePool.Add(vfx);
+        }
+    }
 }

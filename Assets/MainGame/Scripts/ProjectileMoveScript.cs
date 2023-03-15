@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using DG.Tweening;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -98,8 +99,8 @@ public class ProjectileMoveScript : MonoBehaviour {
 				}
 			}
 		
-			speed = 0;
-			GetComponent<Rigidbody>().isKinematic = true;
+			//speed = 0;
+			//GetComponent<Rigidbody>().isKinematic = true;
 
 			ContactPoint contact = co.contacts [0];
 			Quaternion rot = Quaternion.FromToRotation (Vector3.up, contact.normal);
@@ -138,7 +139,10 @@ public class ProjectileMoveScript : MonoBehaviour {
 		}
 		
 		yield return new WaitForSeconds (waitTime);
-		Destroy (gameObject);
+		//Destroy (gameObject);
+		this.gameObject.SetActive (false);
+		this.transform.position = Vector3.zero;
+		collided = false;
 	}
 
     private void FixedUpdate()

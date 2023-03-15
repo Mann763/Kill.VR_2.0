@@ -1509,7 +1509,7 @@ namespace HurricaneVR.Editor
             serializedObject.ApplyModifiedProperties();
 
 
-            PosesListView?.Refresh();
+            PosesListView?.Rebuild();
         }
     }
 

@@ -2,31 +2,50 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Valve.VR;
+using TMPro;
 
-public class MainMenu : MonoBehaviour
+namespace HurricaneVR.Framework.Core.Player
 {
-    public GameObject menu_panel;
-    public GameObject settings_panel;
-
-    void StartGame()
+    public class MainMenu : MonoBehaviour
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
-    }
+        public HVRScreenFade ScreenFade;
 
-    void SettingsEnable()
-    {
-        menu_panel.SetActive(false);
-        settings_panel.SetActive(true);
-    }
+        public GameObject menu_panel;
+        public GameObject settings_panel;
+        public TextMeshProUGUI Highscore_text;
 
-    void SettingsDisable()
-    {
-        menu_panel.SetActive(true);
-        settings_panel.SetActive(false);
-    }
+        public void StartFade()
+        {
+            ScreenFade.Fade(1, 1);
+        }
 
-    void Quit()
-    {
-        Application.Quit();
+        public void FadeOut()
+        {
+            ScreenFade.Fade(0,1);
+        }
+        public void StartGame()
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+            Highscore_text.text = PlayerPrefs.GetInt("Highscore").ToString();
+        }
+
+        public void SettingsEnable()
+        {
+            menu_panel.SetActive(false);
+            settings_panel.SetActive(true);
+        }
+
+        public void SettingsDisable()
+        {
+            menu_panel.SetActive(true);
+            settings_panel.SetActive(false);
+        }
+
+        public void Quit()
+        {
+            Application.Quit();
+        }
     }
 }
+

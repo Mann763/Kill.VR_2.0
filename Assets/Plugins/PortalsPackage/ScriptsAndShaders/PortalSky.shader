@@ -35,7 +35,7 @@ Category {
 			#include "UnityCG.cginc"
 
 			fixed4 _TintColor;
-			samplerCUBE _Cube;   
+			samplerCUBE _Cube;		
 
 			struct appdata_t {
 				float4 vertex : POSITION;
@@ -44,6 +44,7 @@ Category {
 			struct v2f {
 				float4 vertex : POSITION;
 				float3 viewDir : TEXCOORD1;
+				
 			};
 			
 			float4 _MainTex_ST;

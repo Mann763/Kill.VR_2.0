@@ -29,7 +29,7 @@ Shader "Hovl/Particles/Blend_TwoSides"
 		Blend SrcAlpha OneMinusSrcAlpha	
 		CGPROGRAM
 		#include "UnityShaderVariables.cginc"
-		//#pragma target 3.0
+		#pragma target 3.0
 		#pragma surface surf Unlit keepalpha noshadow 
 		#undef TRANSFORM_TEX
 		#define TRANSFORM_TEX(tex,name) float4(tex.xy * name##_ST.xy + name##_ST.zw, tex.z, tex.w)
